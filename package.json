@@ -79,6 +79,7 @@
   },
   "scripts": {
     "build": "grunt build",
+    "prepare": "npm run build",
     "release": "grunt release",
     "publish:aws": "npm run test:tasks && grunt && grunt publish-to-aws",
     "format": "prettier --write '**/*.{js,css,json,md}' && eslint --fix .",
