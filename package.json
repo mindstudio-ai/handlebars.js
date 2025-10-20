@@ -71,7 +71,7 @@
     "webpack": "^1.12.6",
     "webpack-dev-server": "^1.12.1"
   },
-  "main": "lib/index.js",
+  "main": "dist/cjs/handlebars.js",
   "types": "types/index.d.ts",
   "browser": "./dist/cjs/handlebars.js",
   "bin": {
