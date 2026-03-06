@@ -337,7 +337,10 @@ describe('Regressions', function () {
       },
     };
 
-    shouldCompileTo('{{helpa length="foo"}}', [obj, helpers], 'foo');
+    expectTemplate('{{helpa length="foo"}}')
+      .withInput(obj)
+      .withHelpers(helpers)
+      .toCompileTo('foo');
   });
 
   it('GH-1319: "unless" breaks when "each" value equals "null"', function () {
@@ -373,20 +376,16 @@ describe('Regressions', function () {
       var result = newHandlebarsInstance.templates['test.hbs']({
         name: 'yehuda',
       });
-      equals(result.trim(), 'YEHUDA');
+      expect(result.trim()).toBe('YEHUDA');
     });
 
     it('should call "helperMissing" if a helper is missing', function () {
       var newHandlebarsInstance = Handlebars.create();
 
-      shouldThrow(
-        function () {
-          registerTemplate(newHandlebarsInstance, compiledTemplateVersion7());
-          newHandlebarsInstance.templates['test.hbs']({});
-        },
-        Handlebars.Exception,
-        'Missing helper: "loud"'
-      );
+      expect(function () {
+        registerTemplate(newHandlebarsInstance, compiledTemplateVersion7());
+        newHandlebarsInstance.templates['test.hbs']({});
+      }).toThrow('Missing helper: "loud"');
     });
 
     it('should pass "options.lookupProperty" to "lookup"-helper, even with old templates', function () {
@@ -403,7 +402,7 @@ describe('Regressions', function () {
           property: 'a',
           test: { a: 'b' },
         })
-      ).to.equal('b');
+      ).toBe('b');
     });
 
     function registerTemplate(Handlebars, compileTemplate) {
@@ -479,19 +478,19 @@ describe('Regressions', function () {
       newHandlebarsInstance = Handlebars.create();
     });
     afterEach(function () {
-      sinon.restore();
+      vi.restoreAllMocks();
     });
 
     it('should only compile global partials once', function () {
-      var templateSpy = sinon.spy(newHandlebarsInstance, 'template');
+      var templateSpy = vi.spyOn(newHandlebarsInstance, 'template');
       newHandlebarsInstance.registerPartial({
         dude: 'I am a partial',
       });
       var string = 'Dudes: {{> dude}} {{> dude}}';
       newHandlebarsInstance.compile(string)(); // This should compile template + partial once
       newHandlebarsInstance.compile(string)(); // This should only compile template
-      equal(templateSpy.callCount, 3);
-      sinon.restore();
+      expect(templateSpy).toHaveBeenCalledTimes(3);
+      vi.restoreAllMocks();
     });
   });
 
